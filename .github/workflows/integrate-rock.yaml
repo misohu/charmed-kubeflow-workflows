@@ -1,4 +1,4 @@
-name: Integrate ROCK into charm
+name: Integrate rock into charm
 
 on:
   workflow_call:
@@ -25,7 +25,7 @@ on:
         required: true
         type: string
       dry-run:
-        description: "Run in dry-run mode?"
+        description: "Whether to run `chaci integrate-rock` in dry-run mode or not"
         required: false
         default: true
         type: boolean
@@ -47,7 +47,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install charmed-analytics-ci
-        run: pip install charmed-analytics-ci==1.1.0
+        run: pipx install charmed-analytics-ci==1.1.0
 
       - name: Install yq
         run: sudo snap install yq
@@ -93,7 +93,7 @@ jobs:
             echo "url=" >> "$GITHUB_OUTPUT"
           fi
       
-      - name: Import and configure the GPG key for CHACI
+      - name: Import and configure the GPG key for chaci
         uses: crazy-max/ghaction-import-gpg@e89d40939c28e39f97cf32126055eeae86ba74ec
         with:
           gpg_private_key: ${{ secrets.CHACI_GPG_PRIVATE }}
