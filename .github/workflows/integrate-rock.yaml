@@ -75,7 +75,13 @@ jobs:
       - name: Determine triggering PR (if merged)
         id: triggering_pr
         run: |
-          if [[ "${{ inputs.event-name }}" != "pull_request" ]]; then
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "Workflow dispatch — skipping triggering PR detection."
+            echo "url=" >> "$GITHUB_OUTPUT"
+          elif [[ "${{ inputs.event-name }}" == "pull_request" ]]; then
+            echo "PR event — skipping triggering PR detection."
+            echo "url=" >> "$GITHUB_OUTPUT"
+          else
             sudo apt update && sudo apt install -y gh
 
             pr_number=$(gh pr list --state merged --search "$(git rev-parse --short HEAD)" --json number --jq '.[0].number' || true)
@@ -88,11 +94,8 @@ jobs:
               echo "No triggering PR found."
               echo "url=" >> "$GITHUB_OUTPUT"
             fi
-          else
-            echo "PR event — skipping triggering PR detection."
-            echo "url=" >> "$GITHUB_OUTPUT"
           fi
-      
+
       - name: Import and configure the GPG key for chaci
         uses: crazy-max/ghaction-import-gpg@e89d40939c28e39f97cf32126055eeae86ba74ec
         with:
